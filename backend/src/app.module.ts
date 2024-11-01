@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { PostModule } from './post/post.module';
+import { CommentModule } from './comment/comment.module';
 
 
 config(); // loads environment variables from .env file
@@ -23,6 +26,9 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
       synchronize: true,
     }),
     AuthModule,
+    UserModule,
+    PostModule,
+    CommentModule,
     
   ],
   controllers: [AppController],

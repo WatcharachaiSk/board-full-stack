@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+config();
+const { JWTSECRET } = process.env;
+
 export const jwtConstants = {
-  secret: 'JWTPAST-TESTFILE',
+  secret: JWTSECRET,
 };

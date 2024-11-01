@@ -3,12 +3,12 @@ version: '3.8'
 services:
   postgresql:
     image: postgres:14
-    container_name: test_pg
+    container_name: board_pg
     restart: unless-stopped
     environment:
-      POSTGRES_USER: test_root
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test_pg
+      POSTGRES_USER: board_root
+      POSTGRES_PASSWORD: board_password
+      POSTGRES_DB: board_pg
       TZ: "UTC"
       PGTZ: "UTC"
     ports:
