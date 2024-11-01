@@ -1,9 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -43,9 +43,21 @@ export class UserService {
   //   return `This action returns all user`;
   // }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
+  async findOneById(id: number): Promise<UserEntity | undefined> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {
+          id: id
+        }
+      })
+      if (_.isEmpty(user)) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return user
+    } catch (error) {
+      throw error
+    }
+  }
 
   // update(id: number, updateUserDto: UpdateUserDto) {
   //   return `This action updates a #${id} user`;
