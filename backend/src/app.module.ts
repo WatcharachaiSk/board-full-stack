@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { CommunityModule } from './community/community.module';
+import { InitDataModule } from './init-data/init-data.module';
 
 
 config(); // loads environment variables from .env file
@@ -29,6 +31,8 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
     UserModule,
     PostModule,
     CommentModule,
+    CommunityModule,
+    InitDataModule,
     
   ],
   controllers: [AppController],
