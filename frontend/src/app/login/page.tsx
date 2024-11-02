@@ -41,7 +41,9 @@ export default function LoginPage() {
             height={250}
             className='mx-auto mb-6'
           />
-          <p className='text-white text-xl font-light'>a Board</p>
+          <p className='text-white text-xl font-serif italic font-light'>
+            a Board
+          </p>
         </div>
       </div>
     </div>

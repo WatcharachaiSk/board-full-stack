@@ -21,7 +21,7 @@ function Navbar() {
     <nav style={{ background: '#243831' }} className='text-white p-2 w-full'>
       <div className='flex justify-between items-center'>
         {/* Logo Section */}
-        <div className='text-lg font-serif italic'>a Board</div>
+        <div className='text-lg font-serif italic indent-8'>a Board</div>
 
         {/* Desktop Menu */}
         <div className='hidden md:flex items-center space-x-4'>
