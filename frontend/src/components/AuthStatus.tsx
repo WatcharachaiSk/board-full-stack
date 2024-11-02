@@ -1,5 +1,5 @@
 // src/components/AuthStatus.tsx
-"use client"; // เพิ่มบรรทัดนี้ที่ด้านบนสุดของไฟล์
+// "use client";
 
 import React from 'react';
 import useAuthStore from '@services/store/authStore';

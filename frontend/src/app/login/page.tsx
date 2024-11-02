@@ -1,71 +1,53 @@
-"use client";
+'use client';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Routers } from '../../routers/routers';
 
-import React, { useState } from 'react';
-import useAuthStore from '@services/store/authStore';
+export default function LoginPage() {
+  const router = useRouter();
 
-const Login: React.FC = () => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const login = useAuthStore((state) => state.login);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [name]: value,
-    }));
+  const navigateToPage = (page: string) => {
+    router.push(page);
   };
-
-  const handleLogin = async () => {
-    const { username, password } = credentials;
-    try {
-      await login(username, password);
-      alert('Logged in successfully');
-    } catch (error) {
-      alert('Login failed');
-    }
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Login</h1>
-        <div>
-          <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-600">
-            Username:
-          </label>
+    <div className='flex md:flex-row lg:flex-row flex-col-reverse h-screen bg-[#20382F]'>
+      {/* Left Side - Sign In Form */}
+      <div className='md:h-full w-full h-4/6 md:w-3/5 flex items-center justify-center p-4'>
+        <div className='text-white w-full max-w-md'>
+          <h1 className='text-3xl font-semibold mb-8 md:text-left'>Sign in</h1>
           <input
-            type="text"
-            id="username"
-            name="username"
-            value={credentials.username}
-            onChange={handleChange}
-            placeholder="Enter your username"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            type='text'
+            placeholder='Username'
+            className='mb-4 p-3 w-full rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-500'
           />
+          <button
+            onClick={() => {
+              navigateToPage(Routers.Home);
+            }}
+            className='p-3 w-full bg-[#49A569] hover:bg-green-700 text-white rounded-md'
+          >
+            Sign In
+          </button>
         </div>
-        <div>
-          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-600">
-            Password:
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+      </div>
+
+      {/* Right Side - Image */}
+      <div className='md:h-full w-full h-3/6 md:w-2/5 bg-[#2B5F44] flex items-center justify-center p-4 md:rounded-tl-3xl md:rounded-bl-3xl rounded-br-3xl rounded-bl-3xl'>
+        <div className='text-center'>
+          <Image
+            src='/aBoard.png'
+            alt='Board illustration'
+            width={250}
+            height={250}
+            className='mx-auto mb-6'
           />
+          <p className='text-white text-xl font-light'>a Board</p>
         </div>
-        <button
-          onClick={handleLogin}
-          className="w-full py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          Login
-        </button>
       </div>
     </div>
   );
-};
+}
 
-export default Login;
+// Tailwind CSS configuration
+// You need to add the necessary Tailwind CSS classes to your global CSS or Tailwind CSS setup
+// Make sure to have tailwind.config.js file properly set up to use tailwind classes in your project
