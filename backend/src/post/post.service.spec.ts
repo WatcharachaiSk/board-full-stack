@@ -1,12 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { PostService } from './post.service';
 import { PostEntity } from './entities/post.entity';
+import { UserService } from '../user/user.service';
+import { CommunityService } from '../community/community.service';
 import { Repository } from 'typeorm';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { UserEntity } from '../user/entities/user.entity';
+import { CommunityEntity } from '../community/entities/community.entity';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import * as _ from 'lodash';
 
 describe('PostService', () => {
   let service: PostService;
-  let repository: Repository<PostEntity>;
+  let postRepository: Repository<PostEntity>;
+  let userService: UserService;
+  let communityService: CommunityService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,90 +26,281 @@ describe('PostService', () => {
           provide: getRepositoryToken(PostEntity),
           useClass: Repository,
         },
+        {
+          provide: UserService,
+          useValue: {
+            findOneById: jest.fn(),
+          },
+        },
+        {
+          provide: CommunityService,
+          useValue: {
+            findOneById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<PostService>(PostService);
-    repository = module.get<Repository<PostEntity>>(getRepositoryToken(PostEntity));
+    postRepository = module.get<Repository<PostEntity>>(getRepositoryToken(PostEntity));
+    userService = module.get<UserService>(UserService);
+    communityService = module.get<CommunityService>(CommunityService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should create a post successfully', async () => {
+    // This test case verifies that the post creation process works as expected when valid user and community entities are provided.
+    const userId = 1;
+    const createPostDto: CreatePostDto = {
+      title: 'Test Post',
+      content: 'This is a test post',
+      communityId: 1,
+    };
+
+    const user: UserEntity = {
+      id: userId,
+      username: 'testuser',
+      posts: [],
+      comments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const community: CommunityEntity = {
+      id: createPostDto.communityId,
+      title: 'Test Community',
+      posts: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const createdPost: PostEntity = {
+      id: 1,
+      title: createPostDto.title,
+      content: createPostDto.content,
+      user: user,
+      community: community,
+      comments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    jest.spyOn(userService, 'findOneById').mockResolvedValue(user);
+    jest.spyOn(communityService, 'findOneById').mockResolvedValue(community);
+    jest.spyOn(postRepository, 'create').mockReturnValue(createdPost);
+    jest.spyOn(postRepository, 'save').mockResolvedValue(createdPost);
+
+    const result = await service.create(userId, createPostDto);
+    expect(result).toEqual(createdPost);
+    expect(userService.findOneById).toHaveBeenCalledWith(userId);
+    expect(communityService.findOneById).toHaveBeenCalledWith(createPostDto.communityId);
+    expect(postRepository.create).toHaveBeenCalledWith({
+      title: createPostDto.title,
+      content: createPostDto.content,
+      user: user,
+      community: community,
+    });
+    expect(postRepository.save).toHaveBeenCalledWith(createdPost);
   });
 
-  describe('createPost', () => {
-    it('should create a new post', async () => {
-      const postDto = { title: 'Test Title', content: 'Test Content' }; // Example DTO
-      const createdPost = { id: 1, ...postDto };
+  it('should throw an error if user not found', async () => {
+    // This test case checks that an error is thrown when the user is not found in the database.
+    const userId = 1;
+    const createPostDto: CreatePostDto = {
+      title: 'Test Post',
+      content: 'This is a test post',
+      communityId: 1,
+    };
 
-      jest.spyOn(repository, 'save').mockResolvedValue(createdPost as PostEntity);
+    jest.spyOn(userService, 'findOneById').mockResolvedValue(null);
 
-      const result = await service.create(createdPost.id, postDto);
+    await expect(service.create(userId, createPostDto)).rejects.toThrow();
+    expect(userService.findOneById).toHaveBeenCalledWith(userId);
+  });
 
-      expect(result).toEqual(createdPost);
-      expect(repository.save).toHaveBeenCalledWith(postDto);
+  it('should throw an error if community not found', async () => {
+    // This test case ensures that an error is thrown when the community is not found in the database.
+    const userId = 1;
+    const createPostDto: CreatePostDto = {
+      title: 'Test Post',
+      content: 'This is a test post',
+      communityId: 1,
+    };
+
+    const user: UserEntity = {
+      id: userId,
+      username: 'testuser',
+      posts: [],
+      comments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    jest.spyOn(userService, 'findOneById').mockResolvedValue(user);
+    jest.spyOn(communityService, 'findOneById').mockResolvedValue(null);
+
+    await expect(service.create(userId, createPostDto)).rejects.toThrow();
+    expect(userService.findOneById).toHaveBeenCalledWith(userId);
+    expect(communityService.findOneById).toHaveBeenCalledWith(createPostDto.communityId);
+  });
+
+  it('should find all posts successfully', async () => {
+    // This test case verifies that the service can retrieve all posts along with related user, comments, and community entities.
+    const posts: PostEntity[] = [
+      {
+        id: 1,
+        title: 'Test Post',
+        content: 'This is a test post',
+        user: {
+          id: 1,
+          username: 'testuser',
+          posts: [],
+          comments: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        community: {
+          id: 1,
+          title: 'Test Community',
+          posts: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    jest.spyOn(postRepository, 'find').mockResolvedValue(posts);
+
+    const result = await service.findAll();
+    expect(result).toEqual(posts);
+    expect(postRepository.find).toHaveBeenCalledWith({
+      relations: {
+        user: true,
+        comments: true,
+        community: true,
+      },
     });
   });
 
-  describe('getPostById', () => {
-    it('should return a post by ID', async () => {
-      const postId = 1;
-      const foundPost = { id: postId, title: 'Test Title', content: 'Test Content' };
+  it('should find a post by id successfully', async () => {
+    // This test case verifies that the service can retrieve a post by its id along with related user, comments, and community entities.
+    const postId = 1;
+    const post: PostEntity = {
+      id: postId,
+      title: 'Test Post',
+      content: 'This is a test post',
+      user: {
+        id: 1,
+        username: 'testuser',
+        posts: [],
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      community: {
+        id: 1,
+        title: 'Test Community',
+        posts: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      comments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(foundPost as PostEntity);
+    jest.spyOn(postRepository, 'findOne').mockResolvedValue(post);
 
-      const result = await service.findOne(postId);
-
-      expect(result).toEqual(foundPost);
-      expect(repository.findOne).toHaveBeenCalledWith(postId);
-    });
-
-    it('should throw an error if post not found', async () => {
-      const postId = 999;
-
-      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
-
-      await expect(service.findOne(postId)).rejects.toThrow(`Post with ID ${postId} not found`);
+    const result = await service.findOneById(postId);
+    expect(result).toEqual(post);
+    expect(postRepository.findOne).toHaveBeenCalledWith({
+      where: { id: postId },
+      relations: {
+        user: true,
+        comments: true,
+        community: true,
+      },
     });
   });
 
-  describe('updatePost', () => {
-    it('should update a post', async () => {
-      const postId = 1;
-      const updateDto = { title: 'Updated Title', content: 'Updated Content' };
-      const existingPost = { id: postId, title: 'Old Title', content: 'Old Content' };
-      const updatedPost = { ...existingPost, ...updateDto };
+  it('should throw an error if post not found', async () => {
+    // This test case ensures that an error is thrown when the post is not found by its id.
+    const postId = 1;
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(existingPost as PostEntity);
-      jest.spyOn(repository, 'save').mockResolvedValue(updatedPost as PostEntity);
+    jest.spyOn(postRepository, 'findOne').mockResolvedValue(null);
 
-      const result = await service.update(postId, updateDto);
-
-      expect(result).toEqual(updatedPost);
-      expect(repository.save).toHaveBeenCalledWith(updatedPost);
+    await expect(service.findOneById(postId)).rejects.toThrow(new HttpException('Post not found', HttpStatus.NOT_FOUND));
+    expect(postRepository.findOne).toHaveBeenCalledWith({
+      where: { id: postId },
+      relations: {
+        user: true,
+        comments: true,
+        community: true,
+      },
     });
   });
 
-  describe('deletePost', () => {
-    it('should delete a post', async () => {
-      const postId = 1;
-      const existingPost = { id: postId, title: 'Title', content: 'Content' };
+  it('should update a post successfully', async () => {
+    // This test case verifies that the service can update a post's title and content successfully.
+    const postId = 1;
+    const updatePostDto: UpdatePostDto = {
+      title: 'Updated Title',
+      content: 'Updated Content',
+    };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(existingPost as PostEntity);
-      jest.spyOn(repository, 'remove').mockResolvedValue(existingPost as PostEntity);
+    const existingPost: PostEntity = {
+      id: postId,
+      title: 'Old Title',
+      content: 'Old Content',
+      user: {
+        id: 1,
+        username: 'testuser',
+        posts: [],
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      community: {
+        id: 1,
+        title: 'Test Community',
+        posts: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      comments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-      const result = await service.remove(postId);
+    const updatedPost: PostEntity = {
+      ...existingPost,
+      title: updatePostDto.title,
+      content: updatePostDto.content,
+    };
 
-      expect(result).toEqual(existingPost);
-      expect(repository.remove).toHaveBeenCalledWith(existingPost);
-    });
+    jest.spyOn(service, 'findOneById').mockResolvedValue(existingPost);
+    jest.spyOn(postRepository, 'save').mockResolvedValue(updatedPost);
 
-    it('should throw an error if post not found for deletion', async () => {
-      const postId = 999;
+    const result = await service.update(postId, updatePostDto);
+    expect(result).toEqual(updatedPost);
+    expect(service.findOneById).toHaveBeenCalledWith(postId);
+    expect(postRepository.save).toHaveBeenCalledWith(updatedPost);
+  });
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+  it('should remove a post successfully', async () => {
+    // This test case verifies that the service can remove a post by its id successfully.
+    const postId = 1;
 
-      await expect(service.remove(postId)).rejects.toThrow(`Post with ID ${postId} not found`);
-    });
+    jest.spyOn(postRepository, 'createQueryBuilder').mockReturnValue({
+      softDelete: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockResolvedValue({}),
+    } as any);
+
+    const result = await service.remove(postId);
+    expect(result).toEqual(`This action removes a #${postId} post`);
+    expect(postRepository.createQueryBuilder).toHaveBeenCalledWith('post');
   });
 });

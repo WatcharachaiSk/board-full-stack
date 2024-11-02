@@ -6,21 +6,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import * as _ from 'lodash';
+import { CommunityService } from 'src/community/community.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(PostEntity) private postRepository: Repository<PostEntity>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly communityService: CommunityService
   ) { }
 
   async create(userId: number, createPostDto: CreatePostDto) {
     try {
       const user = await this.userService.findOneById(userId)
+      const community = await this.communityService.findOneById(createPostDto?.communityId)
       const createPost = this.postRepository.create({
         title: createPostDto.title,
         content: createPostDto.content,
-        user: user
+        user: user,
+        community: community
       })
       const saveUser = await this.postRepository.save(createPost)
       return saveUser
@@ -34,7 +38,8 @@ export class PostService {
       const postAll = await this.postRepository.find({
         relations: {
           user: true,
-          comments: true
+          comments: true,
+          community: true
         }
       })
       return postAll
@@ -49,7 +54,8 @@ export class PostService {
         where: { id: id },
         relations: {
           user: true,
-          comments: true
+          comments: true,
+          community: true
         }
       })
       if (_.isEmpty(post)) {
@@ -79,6 +85,7 @@ export class PostService {
 
   async remove(id: number) {
     try {
+      await this.findOneById(id)
       await this.postRepository
         .createQueryBuilder('post')
         .softDelete()
