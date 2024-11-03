@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import ClientWrapper from '@components/ClientWrapper'; // นำเข้า ClientWrapper
+import ClientWrapper from '@components/ClientWrapper';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -25,15 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         style={{ background: '#BBC2C0' }}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* ห่อเนื้อหาด้วย ClientWrapper */}
-        <ClientWrapper>
-          {children}
-        </ClientWrapper>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

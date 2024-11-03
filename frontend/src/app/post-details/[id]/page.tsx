@@ -269,7 +269,18 @@ const PostDetails = () => {
                         {new Date(comment.createdAt).toLocaleString()}
                       </span>
                     </p>
-                    <p className='mt-4 text-gray-700'>{comment.content}</p>
+                    <p
+                      style={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        wordBreak: 'break-word',
+                      }}
+                      className='mt-4 text-gray-700'
+                    >
+                      {comment.content}
+                    </p>
                   </>
                 )}
               </div>
