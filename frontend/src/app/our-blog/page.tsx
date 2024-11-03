@@ -6,25 +6,19 @@ import Post from '@components/Post';
 import { useRouter } from 'next/navigation';
 import SearchCreate from '@components/SearchCreate';
 import { Routers } from '../../routers/routers';
+import usePostStore from '@services/store/postStore';
+import { useEffect } from 'react';
 
 function OurBlog() {
   const router = useRouter();
+  const { posts, fetchPostsByUser } = usePostStore();
 
   const navigateToPage = (page: string, isId?: number) => {
     router.push(`${page}/${isId}`);
   };
-  const posts = [
-    {
-      id: 1,
-      author: 'User',
-      category: 'History',
-      title: 'The Beginning of the End of the World',
-      excerpt:
-        'The afterlife sitcom The Good Place comes to its culmination, the show’s two protagonists, Eleanor and Chidi...',
-      commentsCount: 32,
-      profileImage: 'https://via.placeholder.com/40',
-    },
-  ];
+  useEffect(() => {
+    fetchPostsByUser();
+  }, [fetchPostsByUser]);
   return (
     <div className='flex w-full h-full flex-col'>
       {/* Main Content */}
@@ -38,12 +32,12 @@ function OurBlog() {
             key={index}
             index={index}
             id={post.id}
-            author={post.author}
-            category={post.category}
+            user={post.user.username}
+            community={post.community.title}
+            communityId={post.community.id}
             title={post.title}
-            excerpt={post.excerpt}
+            content={post.content}
             commentsCount={post.commentsCount}
-            profileImage={post.profileImage}
             navigateToPage={navigateToPage}
           />
         ))}

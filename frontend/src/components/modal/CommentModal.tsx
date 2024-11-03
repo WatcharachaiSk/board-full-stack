@@ -1,4 +1,6 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import useCommentStore from '@services/store/commentStore';
+import { useParams } from 'next/navigation';
 
 type CommentModalProps = {
   isOpen: boolean;
@@ -6,7 +8,28 @@ type CommentModalProps = {
 };
 
 const CommentModal: FC<CommentModalProps> = ({ isOpen, onClose }) => {
+  const { createComment } = useCommentStore();
+  const { id } = useParams();
+  const [commentContent, setCommentContent] = useState('');
+
   if (!isOpen) return null;
+
+  const handlePostComment = async () => {
+    if (commentContent.trim() === '') {
+      return; // ไม่ให้โพสต์ความคิดเห็นที่ว่างเปล่า
+    }
+
+    try {
+      await createComment({
+        content: commentContent,
+        postId: Number(id),
+      });
+      setCommentContent(''); // ล้างข้อความหลังโพสต์สำเร็จ
+      onClose(); // ปิด Modal
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    }
+  };
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
@@ -18,6 +41,8 @@ const CommentModal: FC<CommentModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
         <textarea
+          value={commentContent}
+          onChange={(e) => setCommentContent(e.target.value)}
           placeholder="What's on your mind..."
           className='w-full p-3 h-32 rounded-md border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500'
         ></textarea>
@@ -28,7 +53,10 @@ const CommentModal: FC<CommentModalProps> = ({ isOpen, onClose }) => {
           >
             Cancel
           </button>
-          <button className='px-4 py-2 bg-[#49A569] text-white border border-[#49A569] rounded-md'>
+          <button
+            onClick={handlePostComment}
+            className='px-4 py-2 bg-[#49A569] text-white border border-[#49A569] rounded-md'
+          >
             Post
           </button>
         </div>

@@ -46,6 +46,7 @@ export class UserService {
           id: id
         }
       })
+      
       if (_.isEmpty(user)) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }

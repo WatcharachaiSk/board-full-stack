@@ -35,35 +35,51 @@ export class PostService {
 
   async findAll() {
     try {
-      const postAll = await this.postRepository.find({
-        relations: {
-          user: true,
-          comments: true,
-          community: true
-        }
-      })
-      return postAll
+      const postAll = await this.postRepository.createQueryBuilder('post')
+        .leftJoinAndSelect('post.user', 'user')
+        .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('comments.user', 'commentUser')
+        .leftJoinAndSelect('post.community', 'community')
+        .loadRelationCountAndMap('post.commentsCount', 'post.comments')
+        .getMany();
+      return postAll;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
   async findOneById(id: number): Promise<PostEntity> {
     try {
-      const post = await this.postRepository.findOne({
-        where: { id: id },
-        relations: {
-          user: true,
-          comments: true,
-          community: true
-        }
-      })
+      const post = await this.postRepository.createQueryBuilder('post')
+        .leftJoinAndSelect('post.user', 'user')
+        .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('comments.user', 'commentUser')
+        .leftJoinAndSelect('post.community', 'community')
+        .loadRelationCountAndMap('post.commentsCount', 'post.comments')
+        .where('post.id = :id', { id })
+        .getOne();
       if (_.isEmpty(post)) {
         throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
       }
       return post
     } catch (error) {
       throw error
+    }
+  }
+
+  async findByUserId(userId: number): Promise<PostEntity[]> {
+    try {
+      const posts = await this.postRepository.createQueryBuilder('post')
+        .leftJoinAndSelect('post.user', 'user')
+        .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('comments.user', 'commentUser')
+        .leftJoinAndSelect('post.community', 'community')
+        .loadRelationCountAndMap('post.commentsCount', 'post.comments')
+        .where('user.id = :userId', { userId })
+        .getMany();
+      return posts;
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -75,6 +91,10 @@ export class PostService {
       }
       if (!_.isEmpty(updatePostDto?.content)) {
         post.content = updatePostDto?.content
+      }
+      if (updatePostDto?.communityId) {
+        const community = await this.communityService.findOneById(updatePostDto?.communityId)
+        post.community = community
       }
       const updatePost = await this.postRepository.save(post)
       return updatePost

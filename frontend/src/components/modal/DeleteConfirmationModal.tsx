@@ -1,52 +1,37 @@
 import React from 'react';
-import usePostStore from '@services/store/postStore';
 
-interface DeletePostModalProps {
+interface DeleteConfirmationModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onDelete: () => void;
-  postId: number;
+  onCancel: () => void;
+  onConfirm: () => void;
 }
 
-const DeletePostModal: React.FC<DeletePostModalProps> = ({
+const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,
-  onClose,
-  onDelete,
-  postId,
+  onCancel,
+  onConfirm,
 }) => {
-  const { deletePostById } = usePostStore();
-
-  const handleDelete = async () => {
-    try {
-      await deletePostById(postId);
-      onDelete();
-    } catch (error) {
-      alert('Error deleting post.');
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
       <div className='bg-white p-6 rounded-lg w-11/12 max-w-sm'>
         <h2 className='text-xl font-semibold mb-4 text-center'>
-          Please confirm if you wish to delete the post
+          Please confirm if you wish to delete the comment
         </h2>
         <p className='text-gray-600 mb-6 text-center'>
-          Are you sure you want to delete the post? Once deleted, it cannot be
-          recovered.
+          Are you sure you want to delete the comment? Once deleted, it cannot be recovered.
         </p>
         <div className='flex flex-col-reverse md:flex-row justify-center'>
           <button
-            onClick={onClose}
+            onClick={onCancel}
             className='flex flex-1 items-center py-2 justify-center bg-transparent text-gray-600 border border-gray-600 rounded-md'
           >
             Cancel
           </button>
           <div className='mx-1 mt-2'></div>
           <button
-            onClick={handleDelete}
+            onClick={onConfirm}
             className='flex flex-1 items-center py-2 justify-center bg-red-600 text-white rounded-md'
           >
             Delete
@@ -57,4 +42,4 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({
   );
 };
 
-export default DeletePostModal;
+export default DeleteConfirmationModal;

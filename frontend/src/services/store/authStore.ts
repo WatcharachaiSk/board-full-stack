@@ -3,18 +3,18 @@ import { login as authLogin } from '../api/authService'; // นำเข้า l
 
 interface AuthState {
   isAuthenticated: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (username: string) => Promise<void>;
   logout: () => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: typeof window !== 'undefined' && !!localStorage.getItem('token'),
-  login: async (username: string, password: string) => {
-    await authLogin(username, password); // ใช้ฟังก์ชัน login ที่นำเข้ามาใหม่
+  isAuthenticated: typeof window !== 'undefined' && !!localStorage.getItem('access_token'),
+  login: async (username: string) => {
+    await authLogin(username);
     set({ isAuthenticated: true });
   },
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.clear()
     set({ isAuthenticated: false });
   },
 }));

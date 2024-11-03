@@ -6,17 +6,21 @@ import { CommentEntity } from './entities/comment.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import * as _ from 'lodash';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(CommentEntity) private commentRepository: Repository<CommentEntity>,
     private readonly userService: UserService,
-    private readonly PostService: UserService
+    private readonly PostService: PostService
   ) { }
 
   async create(userId: number, createCommentDto: CreateCommentDto) {
     try {
+      console.log("userId is ", userId);
+      console.log("postId is ", createCommentDto.postId);
+
       const user = await this.userService.findOneById(userId)
       const post = await this.PostService.findOneById(createCommentDto?.postId)
       const createComment = this.commentRepository.create({

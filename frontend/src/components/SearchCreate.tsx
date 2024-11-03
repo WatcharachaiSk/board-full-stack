@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { FaSearch, FaArrowLeft } from 'react-icons/fa';
-import CommunityDropdown from './CommunityDropdown';
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import CreatePostModal from './modal/CreatePostModal';
+import useCommunityStore from '@services/store/communityStore';
 
 const SearchCreate: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { communities, fetchCommunities } = useCommunityStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCommunity, setSelectedCommunity] =
+    useState('Choose a community');
+
+  useEffect(() => {
+    fetchCommunities();
+  }, [fetchCommunities]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -17,6 +25,15 @@ const SearchCreate: React.FC = () => {
 
   const toggleSearch = () => {
     setIsSearchVisible(!isSearchVisible);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleCommunitySelect = (communityTitle: string) => {
+    setSelectedCommunity(communityTitle);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -42,8 +59,47 @@ const SearchCreate: React.FC = () => {
         )}
         {!isSearchVisible && (
           <>
-            <div className='flex-none'>
-              <CommunityDropdown />
+            <div className='flex-none relative inline-block text-left'>
+              <button
+                onClick={toggleDropdown}
+                className='flex items-center px-4 py-2 text-gray-800 rounded-lg'
+              >
+                {selectedCommunity}
+                <FaChevronDown className='ml-2 text-sm' />
+              </button>
+
+              {isDropdownOpen && (
+                <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
+                  <button
+                    key='Choose a community'
+                    onClick={() => handleCommunitySelect('Choose a community')}
+                    className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
+                      selectedCommunity === 'Choose a community'
+                        ? 'bg-green-100 text-green-600'
+                        : 'text-gray-800'
+                    }`}
+                  >
+                    Choose a community
+                  </button>
+                  {Array.isArray(communities) &&
+                    communities.map((community) => (
+                      <button
+                        key={community.id}
+                        onClick={() => handleCommunitySelect(community.title)}
+                        className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
+                          selectedCommunity === community.title
+                            ? 'bg-green-100 text-green-600'
+                            : 'text-gray-800'
+                        }`}
+                      >
+                        {community.title}
+                        {selectedCommunity === community.title && (
+                          <span>✔️</span>
+                        )}
+                      </button>
+                    ))}
+                </div>
+              )}
             </div>
             <button
               style={{ background: '#49A569' }}
@@ -68,16 +124,59 @@ const SearchCreate: React.FC = () => {
             className='text-gray-700 placeholder-gray-500 focus:outline-none w-full'
           />
         </div>
-        <CommunityDropdown />
+        <div className='flex-none relative inline-block text-left ml-4'>
+          <button
+            onClick={toggleDropdown}
+            className='flex items-center px-4 py-2 text-gray-800 rounded-lg'
+          >
+            {selectedCommunity}
+            <FaChevronDown className='ml-2 text-sm' />
+          </button>
+
+          {isDropdownOpen && (
+            <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
+              <button
+                key='Choose a community'
+                onClick={() => handleCommunitySelect('Choose a community')}
+                className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
+                  selectedCommunity === 'Choose a community'
+                    ? 'bg-green-100 text-green-600'
+                    : 'text-gray-800'
+                }`}
+              >
+                Choose a community
+              </button>
+              {Array.isArray(communities) &&
+                communities.map((community) => (
+                  <button
+                    key={community.id}
+                    onClick={() => handleCommunitySelect(community.title)}
+                    className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
+                      selectedCommunity === community.title
+                        ? 'bg-green-100 text-green-600'
+                        : 'text-gray-800'
+                    }`}
+                  >
+                    {community.title}
+                    {selectedCommunity === community.title && <span>✔️</span>}
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
         <button
           style={{ background: '#49A569' }}
-          className='text-white hover:text-white py-2 px-4 text-sm hover:border-transparent rounded whitespace-nowrap'
+          className='text-white hover:text-white py-2 px-4 text-sm hover:border-transparent rounded whitespace-nowrap ml-4'
           onClick={openModal}
         >
           Create +
         </button>
       </div>
-      <CreatePostModal isOpen={isModalOpen} onClose={closeModal} />
+      <CreatePostModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        communities={communities}
+      />
     </div>
   );
 };

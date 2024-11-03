@@ -23,6 +23,12 @@ export class PostController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/user')
+  findByUserId(@User() user: UserEntity) {
+    return this.postService.findByUserId(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.postService.findOneById(+id);

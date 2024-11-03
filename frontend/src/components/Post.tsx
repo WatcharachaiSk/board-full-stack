@@ -5,16 +5,17 @@ import { Routers } from '../routers/routers';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import DeletePostModal from './modal/DeletePostModal';
 import EditPostModal from './modal/EditPostModal';
+import useCommunityStore from '@services/store/communityStore';
 
 interface PostProps {
   id: number;
   index: number;
-  author: string;
-  category: string;
+  user: string;
+  communityId: number;
+  community: string;
   title: string;
-  excerpt: string;
+  content: string;
   commentsCount: number;
-  profileImage: string;
   navigateToPage: (page: string, isId?: number) => void;
   currentPage: string;
 }
@@ -22,17 +23,18 @@ interface PostProps {
 const Post: React.FC<PostProps> = ({
   id,
   index,
-  author,
-  category,
+  user,
+  community,
+  communityId,
   title,
-  excerpt,
+  content,
   commentsCount,
-  profileImage,
   navigateToPage,
   currentPage,
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { communities } = useCommunityStore();
 
   const openDeleteModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -67,25 +69,35 @@ const Post: React.FC<PostProps> = ({
         }
       }}
     >
-      <DeletePostModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        onDelete={handleDelete}
-      />
-      <EditPostModal
-        isOpen={isEditModalOpen}
-        onClose={closeEditModal}
-        postId={id}
-      />
+      {isDeleteModalOpen && (
+        <DeletePostModal
+          postId={id}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+        />
+      )}
+      {isEditModalOpen && (
+        <EditPostModal
+          isOpen={isEditModalOpen}
+          onClose={closeEditModal}
+          postId={id}
+          communities={communities}
+          community={community}
+          communityId={communityId}
+          title={title}
+          content={content}
+        />
+      )}
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-center space-x-4'>
           <img
-            src={profileImage}
-            alt={author}
+            src={'https://via.placeholder.com/40'}
+            alt={user}
             className='w-10 h-10 rounded-full'
           />
           <div>
-            <p className='text-sm font-semibold text-gray-800'>{author}</p>
+            <p className='text-sm font-semibold text-gray-800'>{user}</p>
           </div>
         </div>
         {currentPage === Routers.OurBlog && (
@@ -106,10 +118,32 @@ const Post: React.FC<PostProps> = ({
         )}
       </div>
       <span className='inline-block px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full'>
-        {category}
+        {community}
       </span>
-      <h2 className='text-lg font-bold text-gray-800 mb-2'>{title}</h2>
-      <p className='text-gray-600 mb-4'>{excerpt}</p>
+      <h2
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          wordBreak: 'break-word',
+        }}
+        className='text-lg font-bold text-gray-800 mb-2'
+      >
+        {title}
+      </h2>
+      <p
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          wordBreak: 'break-word',
+        }}
+        className='text-gray-600 mb-4'
+      >
+        {content}
+      </p>
       <div className='flex items-center space-x-2 text-gray-500 text-sm'>
         <span>💬</span>
         <span>{commentsCount} Comments</span>
