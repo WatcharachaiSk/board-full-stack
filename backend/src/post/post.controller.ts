@@ -16,7 +16,7 @@ export class PostController {
     return this.postService.create(user.id, createPostDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.postService.findAll();
@@ -28,7 +28,7 @@ export class PostController {
     return this.postService.findByUserId(user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.postService.findOneById(+id);

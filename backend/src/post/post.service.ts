@@ -41,6 +41,7 @@ export class PostService {
         .leftJoinAndSelect('comments.user', 'commentUser')
         .leftJoinAndSelect('post.community', 'community')
         .loadRelationCountAndMap('post.commentsCount', 'post.comments')
+        .orderBy('post.createdAt', 'ASC')
         .getMany();
       return postAll;
     } catch (error) {
@@ -57,6 +58,7 @@ export class PostService {
         .leftJoinAndSelect('post.community', 'community')
         .loadRelationCountAndMap('post.commentsCount', 'post.comments')
         .where('post.id = :id', { id })
+        .orderBy('comments.createdAt', 'ASC')
         .getOne();
       if (_.isEmpty(post)) {
         throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
@@ -76,6 +78,7 @@ export class PostService {
         .leftJoinAndSelect('post.community', 'community')
         .loadRelationCountAndMap('post.commentsCount', 'post.comments')
         .where('user.id = :userId', { userId })
+        .orderBy('post.createdAt', 'ASC')
         .getMany();
       return posts;
     } catch (error) {
