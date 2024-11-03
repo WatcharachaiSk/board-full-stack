@@ -1,14 +1,28 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { RiHome6Line } from 'react-icons/ri';
 import { FaEdit } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { Routers } from '../routers/routers';
+import useAuthStore from '@services/store/authStore';
+import LoginRequiredModal from './modal/LoginRequiredModal';
 
 function Sidebar() {
   const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+  const [isLoginRequiredModalOpen, setIsLoginRequiredModalOpen] =
+    useState(false);
+
   const navigateToPage = (page: string) => {
+    if (!isAuthenticated && page == Routers.OurBlog) {
+      setIsLoginRequiredModalOpen(true);
+      return null;
+    }
+
     router.push(page);
+  };
+  const closeLoginRequiredModal = () => {
+    setIsLoginRequiredModalOpen(false);
   };
 
   return (
@@ -42,6 +56,11 @@ function Sidebar() {
             </button>
           </li>
         </ul>
+        <LoginRequiredModal
+          isOpen={isLoginRequiredModalOpen}
+          onClose={closeLoginRequiredModal}
+          title='edit'
+        />
       </nav>
     </aside>
   );

@@ -2,21 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import CreatePostModal from './modal/CreatePostModal';
 import useCommunityStore from '@services/store/communityStore';
+import usePostStore from '@services/store/postStore';
+import LoginRequiredModal from './modal/LoginRequiredModal';
+import useAuthStore from '@services/store/authStore';
 
 const SearchCreate: React.FC = () => {
+  const { searchPosts, searchPostscommunity } = usePostStore();
+  const { searchTerm } = usePostStore();
+  const [username, setUsername] = useState('');
+  const { isAuthenticated } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const { communities, fetchCommunities } = useCommunityStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCommunity, setSelectedCommunity] =
     useState('Choose a community');
+  const [searchInput, setSearchInput] = useState(searchTerm || '');
+  const [isLoginRequiredModalOpen, setIsLoginRequiredModalOpen] =
+    useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setUsername(localStorage.getItem('username') || '');
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetchCommunities();
   }, [fetchCommunities]);
 
   const openModal = () => {
+    if (!isAuthenticated) {
+      setIsLoginRequiredModalOpen(true);
+      return null;
+    }
     setIsModalOpen(true);
+  };
+
+  const closeLoginRequiredModal = () => {
+    setIsLoginRequiredModalOpen(false);
   };
 
   const closeModal = () => {
@@ -31,16 +55,22 @@ const SearchCreate: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleCommunitySelect = (communityTitle: string) => {
+  const handleCommunitySelect = (communityTitle: string, id: number) => {
     setSelectedCommunity(communityTitle);
+    searchPostscommunity(id);
     setIsDropdownOpen(false);
   };
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    searchPosts(value);
+  };
   return (
     <div className='w-full md:flex items-center mb-6'>
       <div className='md:hidden w-full flex items-center justify-between mb-4 p-4 bg-[#BBC2C0]'>
         {isSearchVisible ? (
-          <div className='flex grow items-center rounded-lg px-3 py-2 w-full border border-white '>
+          <div className='flex grow items-center rounded-lg px-3 py-2 w-full border border-white'>
             <FaArrowLeft
               className='text-gray-500 mr-2'
               onClick={toggleSearch}
@@ -49,6 +79,8 @@ const SearchCreate: React.FC = () => {
               style={{ background: '#BBC2C0' }}
               type='text'
               placeholder='Search'
+              value={searchInput} // Bind search term to input value
+              onChange={handleSearchInputChange} // Handle search input change
               className='text-gray-700 placeholder-gray-500 focus:outline-none w-full'
             />
           </div>
@@ -72,7 +104,9 @@ const SearchCreate: React.FC = () => {
                 <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
                   <button
                     key='Choose a community'
-                    onClick={() => handleCommunitySelect('Choose a community')}
+                    onClick={() =>
+                      handleCommunitySelect('Choose a community', 0)
+                    }
                     className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
                       selectedCommunity === 'Choose a community'
                         ? 'bg-green-100 text-green-600'
@@ -85,7 +119,9 @@ const SearchCreate: React.FC = () => {
                     communities.map((community) => (
                       <button
                         key={community.id}
-                        onClick={() => handleCommunitySelect(community.title)}
+                        onClick={() =>
+                          handleCommunitySelect(community.title, community.id)
+                        }
                         className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
                           selectedCommunity === community.title
                             ? 'bg-green-100 text-green-600'
@@ -121,6 +157,8 @@ const SearchCreate: React.FC = () => {
             style={{ background: '#BBC2C0' }}
             type='text'
             placeholder='Search'
+            value={searchInput}
+            onChange={handleSearchInputChange}
             className='text-gray-700 placeholder-gray-500 focus:outline-none w-full'
           />
         </div>
@@ -137,7 +175,7 @@ const SearchCreate: React.FC = () => {
             <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
               <button
                 key='Choose a community'
-                onClick={() => handleCommunitySelect('Choose a community')}
+                onClick={() => handleCommunitySelect('Choose a community', 0)}
                 className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
                   selectedCommunity === 'Choose a community'
                     ? 'bg-green-100 text-green-600'
@@ -150,7 +188,9 @@ const SearchCreate: React.FC = () => {
                 communities.map((community) => (
                   <button
                     key={community.id}
-                    onClick={() => handleCommunitySelect(community.title)}
+                    onClick={() =>
+                      handleCommunitySelect(community.title, community.id)
+                    }
                     className={`flex justify-between w-full px-4 py-2 text-left hover:bg-green-50 ${
                       selectedCommunity === community.title
                         ? 'bg-green-100 text-green-600'
@@ -176,6 +216,12 @@ const SearchCreate: React.FC = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         communities={communities}
+      />
+
+      <LoginRequiredModal
+        isOpen={isLoginRequiredModalOpen}
+        onClose={closeLoginRequiredModal}
+        title='create'
       />
     </div>
   );

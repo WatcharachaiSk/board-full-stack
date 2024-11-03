@@ -1,4 +1,5 @@
 // services/api/postService.ts
+import { sweet_mixin } from '@components/sweetalert2/sweet';
 import { ApiPaths } from '../../constants/apiPaths';
 import { getApiUrl } from '../../utils/apiHelpers';
 import api from './api';
@@ -64,8 +65,10 @@ export const createPost = async (createBody: CreatePostBody): Promise<Post> => {
   const url = getApiUrl(ApiPaths.Post);
   try {
     const response = await api.post<Post>(url, createBody);
+    sweet_mixin('top-end', 'success', 'create post success', '', 1500);
     return response.data
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'create post error', '', 1500);
     throw error
   }
 };
@@ -78,9 +81,11 @@ export const updatePost = async (updateBody: UpdateBody): Promise<Post> => {
       content: updateBody.content,
       communityId: updateBody.communityId
     }
+    sweet_mixin('top-end', 'success', 'update post success', '', 1500);
     const response = await api.patch<Post>(url, payload);
     return response.data
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'update post error', '', 1500);
     throw error
   }
 };
@@ -109,8 +114,10 @@ export const deletePostById = async (id: number) => {
   const url = `${getApiUrl(ApiPaths.Post)}/${id}`;
   try {
     const response = await api.delete<Post>(url);
+    sweet_mixin('top-end', 'success', 'delete post success', '', 1500);
     return response
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'delete post error', '', 1500);
     throw error
   }
 };

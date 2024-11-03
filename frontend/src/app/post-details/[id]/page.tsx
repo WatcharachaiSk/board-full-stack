@@ -9,6 +9,7 @@ import usePostStore from '@services/store/postStore';
 import useCommentStore from '@services/store/commentStore';
 import useAuthStore from '@services/store/authStore';
 import DeleteConfirmationModal from '@components/modal/DeleteConfirmationModal';
+import LoginRequiredModal from '@components/modal/LoginRequiredModal';
 
 const PostDetails = () => {
   const router = useRouter();
@@ -26,6 +27,8 @@ const PostDetails = () => {
   const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
   const [isEditingComment, setIsEditingComment] = useState<number | null>(null);
   const [editCommentContent, setEditCommentContent] = useState('');
+  const [isLoginRequiredModalOpen, setIsLoginRequiredModalOpen] =
+    useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -51,11 +54,19 @@ const PostDetails = () => {
   };
 
   const handleAddComment = () => {
+    if (!isAuthenticated) {
+      setIsLoginRequiredModalOpen(true);
+      return null;
+    }
     if (window.innerWidth <= 768) {
       setIsModalOpen(true);
     } else {
       setShowCommentForm(true);
     }
+  };
+
+  const closeLoginRequiredModal = () => {
+    setIsLoginRequiredModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -318,6 +329,12 @@ const PostDetails = () => {
         isOpen={isDeleteConfirmationOpen}
         onCancel={() => setIsDeleteConfirmationOpen(false)}
         onConfirm={handleDeleteComment}
+      />
+
+      <LoginRequiredModal
+        isOpen={isLoginRequiredModalOpen}
+        onClose={closeLoginRequiredModal}
+        title='comments'
       />
     </div>
   );

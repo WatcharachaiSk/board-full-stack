@@ -6,6 +6,7 @@ import { RiHome6Line } from 'react-icons/ri';
 import { FaEdit } from 'react-icons/fa';
 import { Routers } from '../routers/routers';
 import useAuthStore from '@services/store/authStore';
+import LoginRequiredModal from './modal/LoginRequiredModal';
 
 function Navbar() {
   const router = useRouter();
@@ -13,6 +14,7 @@ function Navbar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [username, setUsername] = useState('');
   const { isAuthenticated, logout } = useAuthStore();
+  const [isLoginRequiredModalOpen, setIsLoginRequiredModalOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -29,7 +31,14 @@ function Navbar() {
   };
 
   const navigateToPage = (page: string) => {
+    if (!isAuthenticated && page == Routers.OurBlog) {
+      setIsLoginRequiredModalOpen(true);
+      return null;
+    }
     router.push(page);
+  };
+  const closeLoginRequiredModal = () => {
+    setIsLoginRequiredModalOpen(false);
   };
 
   return (
@@ -156,7 +165,25 @@ function Navbar() {
                 </span>
                 <span>Our Blog</span>
               </a>
+              <LoginRequiredModal
+                isOpen={isLoginRequiredModalOpen}
+                onClose={closeLoginRequiredModal}
+                title='edit'
+              />
             </nav>
+            {!isAuthenticated && (
+              <div className='mt-6'>
+                <button
+                  onClick={() => {
+                    navigateToPage(Routers.Login);
+                  }}
+                  style={{ background: '#49A569' }}
+                  className='w-full py-2 text-white rounded-lg hover:bg-green-700'
+                >
+                  Sign In
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 // services/api/commentService.ts
+import { sweet_mixin } from '@components/sweetalert2/sweet';
 import { ApiPaths } from '../../constants/apiPaths';
 import { getApiUrl } from '../../utils/apiHelpers';
 import api from './api';
@@ -41,8 +42,10 @@ export const createComment = async (commentBody: CreateCommentBody): Promise<Com
   const url = getApiUrl(ApiPaths.Comment);
   try {
     const response = await api.post<CommentResponse>(url, commentBody);
+    sweet_mixin('top-end', 'success', 'create comment success', '', 1500);
     return response.data
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'create comment error', '', 1500);
     throw error
   }
 };
@@ -52,18 +55,22 @@ export const updateComment = async (updateCommentBody: UpdateCommentBody): Promi
   try {
     const paload = { content: updateCommentBody.content }
     const response = await api.patch<CommentResponse>(url, paload);
+    sweet_mixin('top-end', 'success', 'update comment success', '', 1500);
     return response.data
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'update comment error', '', 1500);
     throw error
   }
 };
 
 export const deleteComment = async (id: number): Promise<CommentResponse> => {
   const url = `${getApiUrl(ApiPaths.Comment)}/${id}`;
+  sweet_mixin('top-end', 'success', 'delete comment success', '', 1500);
   try {
     const response = await api.delete<CommentResponse>(url);
     return response.data
   } catch (error) {
+    sweet_mixin('top-end', 'error', 'delete comment error', '', 1500);
     throw error
   }
 };

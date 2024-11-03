@@ -6,6 +6,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import DeletePostModal from './modal/DeletePostModal';
 import EditPostModal from './modal/EditPostModal';
 import useCommunityStore from '@services/store/communityStore';
+import usePostStore from '@services/store/postStore';
 
 interface PostProps {
   id: number;
@@ -35,6 +36,7 @@ const Post: React.FC<PostProps> = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { communities } = useCommunityStore();
+  const { searchTerm } = usePostStore();
 
   const openDeleteModal = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -56,6 +58,21 @@ const Post: React.FC<PostProps> = ({
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
+  };
+
+  const highlightText = (text: string) => {
+    if (!searchTerm || searchTerm.length < 2) return text;
+
+    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: '#C5A365' }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
   };
 
   return (
@@ -130,7 +147,7 @@ const Post: React.FC<PostProps> = ({
         }}
         className='text-lg font-bold text-gray-800 mb-2'
       >
-        {title}
+        {highlightText(title)}
       </h2>
       <p
         style={{

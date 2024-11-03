@@ -22,9 +22,10 @@ export class AuthService {
     }
   }
   async signIn(loginDto: LoginDto): Promise<{ access_token: string, username: string }> {
-    const user = await this.userService.findByUsername(loginDto.username);
+    let user = await this.userService.findByUsername(loginDto.username);
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      const createUser = await this.register({ username: loginDto.username })
+      user = createUser
     }
 
     const payload = { id: user.id, username: user.username };

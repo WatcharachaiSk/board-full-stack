@@ -105,24 +105,24 @@ const EditPostModal: FC<EditPostModalProps> = ({
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
       <div className='bg-white p-6 rounded-lg w-11/12 max-w-lg'>
         <div className='flex justify-between items-center mb-4'>
-          <h2 className='text-xl font-semibold'>Edit Post {postId}</h2>
+          <h2 className='text-xl font-semibold'>Edit Post</h2>
           <button onClick={onClose} className='text-gray-600 text-2xl'>
             &times;
           </button>
         </div>
         <div className='flex flex-col space-y-4'>
           {/* Community Dropdown */}
-          <div className='flex relative inline-block text-left'>
+          <div className='flex relative text-left'>
             <button
               onClick={toggleDropdown}
-              className='flex items-center px-4 py-2 text-gray-800 rounded-lg border border-[#49A569]'
+              className='flex-1 md:flex-none justify-center flex items-center px-4 py-2 text-gray-800 rounded-lg border border-[#49A569] w-full md:w-fit'
             >
               {formState.selectedCommunity}
               <FaChevronDown className='ml-2 text-sm' />
             </button>
 
             {isDropdownOpen && (
-              <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
+              <div className='absolute mt-12 w-full bg-white rounded-lg shadow-lg z-10'>
                 <button
                   key='Choose a community'
                   onClick={() => handleCommunitySelect('Choose a community', 0)}
@@ -176,18 +176,19 @@ const EditPostModal: FC<EditPostModalProps> = ({
             className='w-full p-3 h-32 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500'
           ></textarea>
         </div>
-        <div className='flex mt-3 justify-end'>
+        <div className='flex-col md:flex-row flex mt-3 justify-end'>
           <button
             onClick={onClose}
-            className='px-6 py-2 mx-2 text-[#49A569] border border-[#49A569] rounded-lg hover:bg-gray-100'
+            className='px-6 py-2 text-[#49A569] border border-[#49A569] rounded-lg hover:bg-gray-100'
           >
             Cancel
           </button>
+          <div className='mx-2 mt-2'></div>
           <button
             onClick={handleSubmit}
             className='px-8 py-2 bg-[#49A569] text-white rounded-lg'
           >
-            Update
+            Post
           </button>
         </div>
       </div>

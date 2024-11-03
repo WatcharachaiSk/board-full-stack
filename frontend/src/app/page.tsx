@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Post from '@components/Post';
 import { useRouter } from 'next/navigation';
 import SearchCreate from '@components/SearchCreate';
@@ -9,6 +9,8 @@ import usePostStore from '@services/store/postStore';
 
 export default function Home() {
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+
   const navigateToPage = (page: string, isId?: number) => {
     router.push(`${page}/${isId}`);
   };
@@ -17,6 +19,11 @@ export default function Home() {
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    console.log('Search Term:', e.target.value);
+  };
 
   return (
     <div className='flex w-full h-full flex-col'>
@@ -32,6 +39,7 @@ export default function Home() {
             id={post.id}
             user={post.user.username}
             community={post.community.title}
+            communityId={post.community.id}
             title={post.title}
             content={post.content}
             commentsCount={post.commentsCount}

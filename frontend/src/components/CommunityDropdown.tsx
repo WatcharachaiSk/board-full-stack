@@ -36,7 +36,7 @@ const CommunityDropdown: React.FC<CommunityDropdownProps> = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className='absolute mt-2 w-48 bg-white rounded-lg shadow-lg z-10'>
+        <div className='absolute mt-2 w-60 bg-white rounded-lg shadow-lg z-10'>
           <button
             key='Choose a community'
             onClick={() => handleSelect('Choose a community')}
