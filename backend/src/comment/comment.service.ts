@@ -18,9 +18,6 @@ export class CommentService {
 
   async create(userId: number, createCommentDto: CreateCommentDto) {
     try {
-      console.log("userId is ", userId);
-      console.log("postId is ", createCommentDto.postId);
-
       const user = await this.userService.findOneById(userId)
       const post = await this.PostService.findOneById(createCommentDto?.postId)
       const createComment = this.commentRepository.create({
