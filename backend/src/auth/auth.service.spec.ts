@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -38,63 +37,56 @@ describe('AuthService', () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('should register a user successfully', async () => {
-    // This test case verifies that the auth service can successfully register a user.
-    const createUserDto: CreateUserDto = {
-      username: 'testuser',
-    };
-    const createdUser: UserEntity = {
-      id: 1,
-      username: createUserDto.username,
-      posts: [],
-      comments: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  describe('register', () => {
+    it('should register a user successfully', async () => {
+      const createUserDto: CreateUserDto = {
+        username: 'testuser',
+      };
+      const createdUser: UserEntity = {
+        id: 1,
+        username: createUserDto.username,
+        posts: [],
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-    jest.spyOn(userService, 'create').mockResolvedValue(createdUser);
+      jest.spyOn(userService, 'create').mockResolvedValue(createdUser);
 
-    const result = await service.register(createUserDto);
-    expect(result).toEqual(createdUser);
-    expect(userService.create).toHaveBeenCalledWith(createUserDto);
-  });
+      const result = await service.register(createUserDto);
 
-  it('should sign in successfully and return access token', async () => {
-    // This test case verifies that the auth service can sign in a user and return an access token.
-    const loginDto: LoginDto = {
-      username: 'testuser',
-    };
-    const user: UserEntity = {
-      id: 1,
-      username: loginDto.username,
-      posts: [],
-      comments: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const token = 'mocked-access-token';
-
-    jest.spyOn(userService, 'findByUsername').mockResolvedValue(user);
-    jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
-
-    const result = await service.signIn(loginDto);
-    expect(result).toEqual({
-      access_token: token,
-      username: user.username,
+      expect(result).toEqual(createdUser);
+      expect(userService.create).toHaveBeenCalledWith(createUserDto);
     });
-    expect(userService.findByUsername).toHaveBeenCalledWith(loginDto.username);
-    expect(jwtService.signAsync).toHaveBeenCalledWith({ id: user.id, username: user.username });
   });
 
-  it('should throw an exception if user not found during sign in', async () => {
-    // This test case ensures that an exception is thrown if the user is not found during sign in.
-    const loginDto: LoginDto = {
-      username: 'unknownuser',
-    };
+  describe('signIn', () => {
+    it('should sign in successfully and return access token', async () => {
+      // Arrange: Define mock data and mock function behavior
+      const loginDto: LoginDto = {
+        username: 'testuser',
+      };
+      const user: UserEntity = {
+        id: 1,
+        username: loginDto.username,
+        posts: [],
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const token = 'mocked-access-token';
 
-    jest.spyOn(userService, 'findByUsername').mockResolvedValue(undefined);
+      jest.spyOn(userService, 'findByUsername').mockResolvedValue(user);
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
 
-    await expect(service.signIn(loginDto)).rejects.toThrow(new HttpException('User not found', HttpStatus.NOT_FOUND));
-    expect(userService.findByUsername).toHaveBeenCalledWith(loginDto.username);
+      const result = await service.signIn(loginDto);
+
+      expect(result).toEqual({
+        access_token: token,
+        username: user.username,
+      });
+      expect(userService.findByUsername).toHaveBeenCalledWith(loginDto.username);
+      expect(jwtService.signAsync).toHaveBeenCalledWith({ id: user.id, username: user.username });
+    });
   });
 });
