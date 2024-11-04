@@ -4,7 +4,7 @@
 - พัฒนาด้วย Next Nest PostgreSQL
 - พัฒนาบน Node Version 18.19.0
 
-## Docker Setup for Project
+## Setup Docker
 
 This README provides instructions to set up and run the PostgreSQL database using Docker. This setup uses a Docker Compose file to initialize and manage the PostgreSQL container for the project in a development environment.
 
@@ -25,18 +25,7 @@ Run command on root file
 docker-compose up -d
 ```
 
-
 ## Setup Frontend
-This project uses the following libraries:
--   **axios**: For making HTTP requests to the backend API.
--   **next**: The React framework used to build the application.
--   **react** & **react-dom**: Core libraries for building the user interface.
--   **react-icons**: Provides a collection of popular icons for easy UI integration.
--   **sweetalert2**: For displaying alerts with better UI/UX.
--   **zustand**: A small, fast, and scalable state management library for React.
--   **@types/react** & **@types/react-dom**: Type definitions for React and React DOM.
--   **tailwindcss**: A utility-first CSS framework for styling.
--   **typescript**: For adding static types to JavaScript, ensuring better code quality and maintainability.
 
 ```javascript
 // เข้าไปที่ ไฟล์ Frontend
@@ -50,16 +39,6 @@ npm run dev
 
 // port listen on 3000
 ```
-ได้เลยครับ แบบที่คุณให้มาดูเรียบง่ายและสรุปได้ดี เหมาะสำหรับการอธิบาย `libraries` ที่ใช้อยู่ในส่วนของ `Setup Frontend` นี่คือ README ที่รวมการตั้งค่าและคำอธิบายทั้งหมด รวมถึงการอธิบาย `libraries` ในรูปแบบที่คุณเสนอ:
-
-markdown
-
-คัดลอกโค้ด
-
-
-
-## Setup Frontend
-
 This project uses the following libraries for efficient development and modern user experience:
 
 -   **axios**: For making HTTP requests to the backend API.
@@ -72,23 +51,6 @@ This project uses the following libraries for efficient development and modern u
 -   **postcss**: A tool for transforming CSS with plugins.
 -   **tailwindcss**: A utility-first CSS framework for styling.
 -   **typescript**: For adding static types to JavaScript, ensuring better code quality and maintainability.
-
-# Frontend-Next Project
-
-#### Setup front-end
-
-```javascript
-// เข้าไปที่ ไฟล์ Frontend
-cd frontend/
-
-// ติดตั้ง package
-npm install
-
-// รัน
-npm run dev
-
-// port listen on 3000
-```
 
 ### Project Structure
 
@@ -134,7 +96,7 @@ frontend/
         └── apiHelpers.ts      # Helper functions for API handling
 ```
 
-#### Setup back-end
+## Setup Backend
 
 ```javascript
 // เข้าไปที่ ไฟล์ back-end
@@ -207,8 +169,7 @@ The `Comment` table stores information about comments made by users on posts.
 | updated_at  | TIMESTAMP    | The date and time when the comment was last updated. |
 | deleted_at  | TIMESTAMP    | The date and time when the comment was deleted. |
 
-## Relationships
-
+### Relationships
 - **User to Post**: One-to-Many relationship, as one user can create multiple posts.
 - **User to Comment**: One-to-Many relationship, as one user can create multiple comments.
 - **Community to Post**: One-to-Many relationship, as one community can have multiple posts.
