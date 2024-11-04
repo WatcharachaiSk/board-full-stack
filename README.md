@@ -34,7 +34,90 @@ npm run dev
 
 // port listen on 3500
 ```
+libraries ที่ใช้ในการพัฒนา:
+-   **class-transformer**: ช่วยแปลงข้อมูลให้อยู่ในรูปแบบที่เราอยากได้ ทำให้จัดการข้อมูลได้ง่ายขึ้น
+-   **class-validator**: เอาไว้ตรวจสอบข้อมูลว่าถูกต้องตามที่เรากำหนดไหม เช่น เช็คว่าฟิลด์ไหนเป็นตัวเลข ฟิลด์ไหนเป็นอีเมล
+-   **lodash**: มีฟังก์ชันช่วยเหลือสารพัด เช่น จัดการอาร์เรย์ ออบเจ็กต์ และข้อมูลทั่วไปในโปรเจกต์
+-   **passport-jwt**: เป็นตัวช่วยให้ระบบพิสูจน์ตัวตนด้วย JWT ใช้ร่วมกับ PassportJS
+-   **passport-local**: ตัวนี้ช่วยให้เราทำระบบล็อกอินง่ายๆ ด้วยชื่อผู้ใช้และรหัสผ่าน
+-   **pg**: เป็นไลบรารีสำหรับเชื่อมต่อกับฐานข้อมูล PostgreSQL โดยเฉพาะ
+-   **typeorm**: เป็น ORM ที่ช่วยจัดการกับฐานข้อมูลเชิงสัมพันธ์ (พวกฐานข้อมูล SQL) โดยไม่ต้องเขียน SQL เยอะ
+- **dotenv**: ใช้จัดการ environment variables โดยโหลดค่าจากไฟล์ `.env` ช่วยให้แยกคอนฟิกต่างๆ ออกจากโค้ดได้ง่าย
+- **jest**: เอาไว้สำหรับเขียนเทส เพื่อให้มั่นใจว่าโค้ดทำงานถูกต้อง
+- **ts-jest**: ช่วยให้ Jest รองรับ TypeScript ทำให้เขียนเทสไฟล์ `.ts` ได้
+- **prettier**: ตัวจัดรูปแบบโค้ดให้อ่านง่าย สะอาดตา ตามมาตรฐานที่เรากำหนดไว้
 
+### Project Structure
+
+```plaintext
+backend/
+├── src/                              # ไฟล์โค้ดหลักของโปรเจกต์ Backend
+│   ├── auth/                         # โมดูลการยืนยันตัวตน (Authentication)
+│   │   ├── dto/                      # Data Transfer Object สำหรับ auth
+│   │   ├── auth.controller.ts        # ควบคุมการทำงานของ auth (Controller)
+│   │   ├── auth.guard.ts             # Guard สำหรับการยืนยันตัวตน
+│   │   ├── auth.module.ts            # โมดูลสำหรับ auth
+│   │   ├── auth.service.spec.ts      # เทสสำหรับ service ของ auth
+│   │   └── auth.service.ts           # บริการจัดการ logic สำหรับ auth
+│   │
+│   ├── base/                         # โฟลเดอร์สำหรับ Entity พื้นฐาน
+│   │   └── base.entity.ts            # Entity พื้นฐานที่ใช้ร่วมกัน
+│   │
+│   ├── comment/                      # โมดูลจัดการคอมเมนต์
+│   │   ├── dto/                      # Data Transfer Object สำหรับ comment
+│   │   ├── entities/                 # Entity ของ comment
+│   │   ├── comment.controller.ts     # ควบคุมการทำงานของ comment (Controller)
+│   │   ├── comment.module.ts         # โมดูลสำหรับ comment
+│   │   ├── comment.service.spec.ts   # เทสสำหรับ service ของ comment
+│   │   └── comment.service.ts        # บริการจัดการ logic สำหรับ comment
+│   │
+│   ├── community/                    # โมดูลจัดการ community
+│   │   ├── entities/                 # Entity ของ community
+│   │   ├── community.controller.ts   # ควบคุมการทำงานของ community (Controller)
+│   │   ├── community.module.ts       # โมดูลสำหรับ community
+│   │   └── community.service.ts      # บริการจัดการ logic สำหรับ community
+│   │
+│   ├── constant/                     # โฟลเดอร์สำหรับค่าคงที่
+│   │   └── jwtConstants.ts           # ค่าคงที่สำหรับการยืนยันตัวตนด้วย JWT
+│   │
+│   ├── dto/                          # Data Transfer Object สำหรับ Response ทั่วไป
+│   │   └── Response.dto.ts           # DTO สำหรับ Response ทั่วไป
+│   │
+│   ├── init-data/                    # โมดูลสำหรับการตั้งค่าและข้อมูลเริ่มต้น
+│   │   ├── init-data.module.ts       # โมดูลสำหรับการตั้งค่าข้อมูลเริ่มต้น
+│   │   └── init-data.service.ts      # บริการสำหรับการตั้งค่าข้อมูลเริ่มต้น
+│   │
+│   ├── post/                         # โมดูลจัดการโพสต์
+│   │   ├── dto/                      # Data Transfer Object สำหรับ post
+│   │   ├── entities/                 # Entity ของ post
+│   │   ├── post.controller.ts        # ควบคุมการทำงานของ post (Controller)
+│   │   ├── post.module.ts            # โมดูลสำหรับ post
+│   │   ├── post.service.spec.ts      # เทสสำหรับ service ของ post
+│   │   └── post.service.ts           # บริการจัดการ logic สำหรับ post
+│   │
+│   ├── user/                         # โมดูลจัดการผู้ใช้
+│   │   ├── dto/                      # Data Transfer Object สำหรับ user
+│   │   ├── entities/                 # Entity ของ user
+│   │   ├── user.controller.ts        # ควบคุมการทำงานของ user (Controller)
+│   │   ├── user.decorator.ts         # Decorator สำหรับ user
+│   │   ├── user.module.ts            # โมดูลสำหรับ user
+│   │   ├── user.service.spec.ts      # เทสสำหรับ service ของ user
+│   │   └── user.service.ts           # บริการจัดการ logic สำหรับ user
+│   │
+│   ├── app.controller.ts             # ควบคุมการทำงานของแอปหลัก
+│   ├── app.module.ts                 # โมดูลหลักของแอป
+│   ├── app.service.ts                # บริการหลักของแอป
+│   └── main.ts                       # Entry point ของแอปพลิเคชัน
+│
+├── test/                             # ไฟล์และโฟลเดอร์สำหรับการทดสอบ (ไม่แสดงในภาพ)
+├── .env                              # ไฟล์สำหรับ Environment Variables
+├── jest.config.js                    # การตั้งค่าสำหรับการทดสอบโดยใช้ Jest
+├── nest-cli.json                     # การตั้งค่าสำหรับ Nest CLI
+├── package.json                      # ข้อมูลและไลบรารีที่ใช้ในโปรเจกต์
+├── tsconfig.build.json               # การตั้งค่า TypeScript สำหรับการ build
+└── tsconfig.json                     # การตั้งค่า TypeScript สำหรับโปรเจกต์
+
+```
 ## Setup Frontend
 
 ```javascript
@@ -108,131 +191,68 @@ frontend/
 
 ## Database Schema Documentation
 
-This README provides an overview of the database schema used in this project. The schema consists of four main tables: `User`, `Post`, `Community`, and `Comment`. Each table and its relationships are described below.
+เอกสารนี้ให้ภาพรวมของโครงสร้างฐานข้อมูลที่ใช้ในโปรเจกต์ ซึ่งประกอบไปด้วย 4 ตารางหลัก ได้แก่ `User`, `Post`, `Community`, และ `Comment` แต่ละตารางและความสัมพันธ์อธิบายดังนี้
 
-## Tables
+## ตาราง
 
-### User
-The `User` table stores information about users of the application.
+### ตาราง User
+ตาราง `User` ใช้เก็บข้อมูลของผู้ใช้ในแอปพลิเคชัน
 
-| Column     | Type         | Description            |
-|------------|--------------|------------------------|
-| id    | SERIAL (PK)  | Unique identifier for each user. |
-| username   | VARCHAR(255) | The username of the user.        |
-| created_at | TIMESTAMP    | The date and time when the user was created. |
-
----
-
-### Post
-The `Post` table stores information about posts created by users.
-
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id     | SERIAL (PK)  | Unique identifier for each post. |
-| user_id     | INT (FK)     | References `user_id` in `User` table, indicating the author of the post. |
-| community_id | INT (FK)    | References `community_id` in `Community` table, indicating the community where the post was made. |
-| title       | VARCHAR(255) | The title of the post.        |
-| content     | TEXT         | The content of the post.      |
-| created_at  | TIMESTAMP    | The date and time when the post was created. |
-| updated_at  | TIMESTAMP    | The date and time when the post was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the post was deleted. |
+| คอลัมน์      | ชนิดข้อมูล     | คำอธิบาย                                |
+|--------------|----------------|------------------------------------------|
+| id           | SERIAL (PK)    | รหัสเฉพาะของผู้ใช้แต่ละคน              |
+| username     | VARCHAR(255)   | ชื่อผู้ใช้                               |
+| created_at   | TIMESTAMP      | วันที่และเวลาที่สร้างผู้ใช้              |
+| updated_at   | TIMESTAMP      | วันที่และเวลาที่อัปเดตล่าสุด             |
+| deleted_at   | TIMESTAMP      | วันที่และเวลาที่ลบผู้ใช้                 |
 
 ---
 
-### Community
-The `Community` table stores information about different communities or groups in the application.
+### ตาราง Post
+ตาราง `Post` ใช้เก็บข้อมูลโพสต์ที่สร้างโดยผู้ใช้
 
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id| SERIAL (PK)  | Unique identifier for each community. |
-| title       | VARCHAR(255) | The name or title of the community. |
-| created_at  | TIMESTAMP    | The date and time when the community was created. |
-| updated_at  | TIMESTAMP    | The date and time when the community was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the community was deleted. |
-
----
-
-### Comment
-The `Comment` table stores information about comments made by users on posts.
-
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id  | SERIAL (PK)  | Unique identifier for each comment. |
-| post_id     | INT (FK)     | References `post_id` in `Post` table, indicating the post the comment is associated with. |
-| user_id     | INT (FK)     | References `user_id` in `User` table, indicating the author of the comment. |
-| content     | TEXT         | The content of the comment.   |
-| created_at  | TIMESTAMP    | The date and time when the comment was created. |
-| updated_at  | TIMESTAMP    | The date and time when the comment was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the comment was deleted. |
-
-### Relationships
-- **User to Post**: One-to-Many relationship, as one user can create multiple posts.
-- **User to Comment**: One-to-Many relationship, as one user can create multiple comments.
-- **Community to Post**: One-to-Many relationship, as one community can have multiple posts.
-- **Post to Comment**: One-to-Many relationship, as one post can have multiple comments.
-
-## Database Schema Documentation
-
-This README provides an overview of the database schema used in this project. The schema consists of four main tables: `User`, `Post`, `Community`, and `Comment`. Each table and its relationships are described below.
-
-## Tables
-
-### User
-The `User` table stores information about users of the application.
-
-| Column     | Type         | Description            |
-|------------|--------------|------------------------|
-| id    | SERIAL (PK)  | Unique identifier for each user. |
-| username   | VARCHAR(255) | The username of the user.        |
-| created_at | TIMESTAMP    | The date and time when the user was created. |
+| คอลัมน์       | ชนิดข้อมูล     | คำอธิบาย                                |
+|---------------|----------------|------------------------------------------|
+| id            | SERIAL (PK)    | รหัสเฉพาะของโพสต์แต่ละรายการ            |
+| user_id       | INT (FK)       | อ้างอิง `user_id` ในตาราง `User` แสดงถึงผู้เขียนโพสต์ |
+| community_id  | INT (FK)       | อ้างอิง `community_id` ในตาราง `Community` แสดงถึงชุมชนที่โพสต์ถูกสร้างขึ้น |
+| title         | VARCHAR(255)   | หัวข้อของโพสต์                          |
+| content       | TEXT           | เนื้อหาของโพสต์                         |
+| created_at    | TIMESTAMP      | วันที่และเวลาที่สร้างโพสต์               |
+| updated_at    | TIMESTAMP      | วันที่และเวลาที่อัปเดตโพสต์ล่าสุด       |
+| deleted_at    | TIMESTAMP      | วันที่และเวลาที่ลบโพสต์                  |
 
 ---
 
-### Post
-The `Post` table stores information about posts created by users.
+### ตาราง Community
+ตาราง `Community` ใช้เก็บข้อมูลเกี่ยวกับชุมชนหรือกลุ่มต่างๆ ในแอปพลิเคชัน
 
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id     | SERIAL (PK)  | Unique identifier for each post. |
-| user_id     | INT (FK)     | References `user_id` in `User` table, indicating the author of the post. |
-| community_id | INT (FK)    | References `community_id` in `Community` table, indicating the community where the post was made. |
-| title       | VARCHAR(255) | The title of the post.        |
-| content     | TEXT         | The content of the post.      |
-| created_at  | TIMESTAMP    | The date and time when the post was created. |
-| updated_at  | TIMESTAMP    | The date and time when the post was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the post was deleted. |
+| คอลัมน์      | ชนิดข้อมูล     | คำอธิบาย                                |
+|--------------|----------------|------------------------------------------|
+| id           | SERIAL (PK)    | รหัสเฉพาะของแต่ละชุมชน                  |
+| title        | VARCHAR(255)   | ชื่อหรือหัวข้อของชุมชน                   |
+| created_at   | TIMESTAMP      | วันที่และเวลาที่สร้างชุมชน               |
+| updated_at   | TIMESTAMP      | วันที่และเวลาที่อัปเดตล่าสุดของชุมชน     |
+| deleted_at   | TIMESTAMP      | วันที่และเวลาที่ลบชุมชน                  |
 
 ---
 
-### Community
-The `Community` table stores information about different communities or groups in the application.
+### ตาราง Comment
+ตาราง `Comment` ใช้เก็บข้อมูลคอมเมนต์ที่ผู้ใช้โพสต์ลงในโพสต์ต่างๆ
 
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id| SERIAL (PK)  | Unique identifier for each community. |
-| title       | VARCHAR(255) | The name or title of the community. |
-| created_at  | TIMESTAMP    | The date and time when the community was created. |
-| updated_at  | TIMESTAMP    | The date and time when the community was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the community was deleted. |
+| คอลัมน์      | ชนิดข้อมูล     | คำอธิบาย                                |
+|--------------|----------------|------------------------------------------|
+| id           | SERIAL (PK)    | รหัสเฉพาะของแต่ละคอมเมนต์              |
+| post_id      | INT (FK)       | อ้างอิง `post_id` ในตาราง `Post` แสดงถึงโพสต์ที่คอมเมนต์เกี่ยวข้องกับ |
+| user_id      | INT (FK)       | อ้างอิง `user_id` ในตาราง `User` แสดงถึงผู้เขียนคอมเมนต์ |
+| content      | TEXT           | เนื้อหาของคอมเมนต์                      |
+| created_at   | TIMESTAMP      | วันที่และเวลาที่สร้างคอมเมนต์           |
+| updated_at   | TIMESTAMP      | วันที่และเวลาที่อัปเดตคอมเมนต์ล่าสุด    |
+| deleted_at   | TIMESTAMP      | วันที่และเวลาที่ลบคอมเมนต์              |
 
----
+## ความสัมพันธ์ระหว่างตาราง
 
-### Comment
-The `Comment` table stores information about comments made by users on posts.
-
-| Column      | Type         | Description                    |
-|-------------|--------------|--------------------------------|
-| id  | SERIAL (PK)  | Unique identifier for each comment. |
-| post_id     | INT (FK)     | References `post_id` in `Post` table, indicating the post the comment is associated with. |
-| user_id     | INT (FK)     | References `user_id` in `User` table, indicating the author of the comment. |
-| content     | TEXT         | The content of the comment.   |
-| created_at  | TIMESTAMP    | The date and time when the comment was created. |
-| updated_at  | TIMESTAMP    | The date and time when the comment was last updated. |
-| deleted_at  | TIMESTAMP    | The date and time when the comment was deleted. |
-
-### Relationships
-- **User to Post**: One-to-Many relationship, as one user can create multiple posts.
-- **User to Comment**: One-to-Many relationship, as one user can create multiple comments.
-- **Community to Post**: One-to-Many relationship, as one community can have multiple posts.
-- **Post to Comment**: One-to-Many relationship, as one post can have multiple comments.
-
+- **User to Post**: ความสัมพันธ์แบบ One-to-Many เนื่องจากผู้ใช้คนหนึ่งสามารถสร้างโพสต์ได้หลายโพสต์
+- **User to Comment**: ความสัมพันธ์แบบ One-to-Many เนื่องจากผู้ใช้คนหนึ่งสามารถสร้างคอมเมนต์ได้หลายคอมเมนต์
+- **Community to Post**: ความสัมพันธ์แบบ One-to-Many เนื่องจากชุมชนหนึ่งสามารถมีหลายโพสต์
+- **Post to Comment**: ความสัมพันธ์แบบ One-to-Many เนื่องจากโพสต์หนึ่งสามารถมีหลายคอมเมนต์
