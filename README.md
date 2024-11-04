@@ -3,7 +3,7 @@
 # คู่มือการติดตั้ง Environment (Development)
 
 - พัฒนาด้วย Next Nest PostgreSQL
-- พัฒนาบน Node Version 18.19.0
+- พัฒนาบน Node Version 18.20.4
 
 ## Setup Docker
 
