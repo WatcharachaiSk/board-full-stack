@@ -7,20 +7,15 @@
 
 ## Setup Docker
 
-This README provides instructions to set up and run the PostgreSQL database using Docker. This setup uses a Docker Compose file to initialize and manage the PostgreSQL container for the project in a development environment.
-
 ### Prerequisites
 
-- Ensure that Docker and Docker Compose are installed on your system.
+- ตรวจสอบให้แน่ใจว่ามีการติดตั้ง Docker และ Docker Compose 
   - [Install Docker](https://docs.docker.com/get-docker/)
   - [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-### Docker Compose Configuration
+### การตั้งค่า Docker Compose
 
-The Docker Compose file is configured to set up a PostgreSQL 14 container with the following settings:
-
-### `docker-compose.yml` Configuration
-Run command on root file
+ไฟล์ Docker Compose นี้ตั้งค่าให้รัน PostgreSQL 14 ในคอนเทนเนอร์โดยมีการตั้งค่าดังนี้:
 
 ```bash
 docker-compose up -d
@@ -28,7 +23,7 @@ docker-compose up -d
 ## Setup Backend
 
 ```javascript
-// เข้าไปที่ ไฟล์ back-end
+// เข้าไปที่ ไฟล์ Backend
 cd backend/
 
 // ติดตั้ง package
