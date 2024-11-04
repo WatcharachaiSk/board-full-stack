@@ -4,21 +4,17 @@
 - พัฒนาด้วย Next Nest PostgreSQL
 - พัฒนาบน Node Version 18.19.0
 
-#### Setup Docker
-
-
-
 ## Docker Setup for Project
 
 This README provides instructions to set up and run the PostgreSQL database using Docker. This setup uses a Docker Compose file to initialize and manage the PostgreSQL container for the project in a development environment.
 
-## Prerequisites
+### Prerequisites
 
 - Ensure that Docker and Docker Compose are installed on your system.
   - [Install Docker](https://docs.docker.com/get-docker/)
   - [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-## Docker Compose Configuration
+### Docker Compose Configuration
 
 The Docker Compose file is configured to set up a PostgreSQL 14 container with the following settings:
 
@@ -30,10 +26,20 @@ docker-compose up -d
 ```
 
 
-#### Setup front-end
+## Setup Frontend
+This project uses the following libraries:
+-   **axios**: For making HTTP requests to the backend API.
+-   **next**: The React framework used to build the application.
+-   **react** & **react-dom**: Core libraries for building the user interface.
+-   **react-icons**: Provides a collection of popular icons for easy UI integration.
+-   **sweetalert2**: For displaying alerts with better UI/UX.
+-   **zustand**: A small, fast, and scalable state management library for React.
+-   **@types/react** & **@types/react-dom**: Type definitions for React and React DOM.
+-   **tailwindcss**: A utility-first CSS framework for styling.
+-   **typescript**: For adding static types to JavaScript, ensuring better code quality and maintainability.
 
 ```javascript
-// เข้าไปที่ ไฟล์ front-end
+// เข้าไปที่ ไฟล์ Frontend
 cd frontend/
 
 // ติดตั้ง package
@@ -43,6 +49,89 @@ npm install
 npm run dev
 
 // port listen on 3000
+```
+ได้เลยครับ แบบที่คุณให้มาดูเรียบง่ายและสรุปได้ดี เหมาะสำหรับการอธิบาย `libraries` ที่ใช้อยู่ในส่วนของ `Setup Frontend` นี่คือ README ที่รวมการตั้งค่าและคำอธิบายทั้งหมด รวมถึงการอธิบาย `libraries` ในรูปแบบที่คุณเสนอ:
+
+markdown
+
+คัดลอกโค้ด
+
+
+
+## Setup Frontend
+
+This project uses the following libraries for efficient development and modern user experience:
+
+-   **axios**: For making HTTP requests to the backend API.
+-   **next**: The React framework used to build the application.
+-   **react** & **react-dom**: Core libraries for building the user interface.
+-   **react-icons**: Provides a collection of popular icons for easy UI integration.
+-   **sweetalert2**: For displaying alerts with better UI/UX.
+-   **zustand**: A small, fast, and scalable state management library for React.
+-   **@types/react** & **@types/react-dom**: Type definitions for React and React DOM.
+-   **postcss**: A tool for transforming CSS with plugins.
+-   **tailwindcss**: A utility-first CSS framework for styling.
+-   **typescript**: For adding static types to JavaScript, ensuring better code quality and maintainability.
+
+# Frontend-Next Project
+
+#### Setup front-end
+
+```javascript
+// เข้าไปที่ ไฟล์ Frontend
+cd frontend/
+
+// ติดตั้ง package
+npm install
+
+// รัน
+npm run dev
+
+// port listen on 3000
+```
+
+### Project Structure
+
+```plaintext
+frontend/
+├── public/                    # Static assets like images, icons, etc.
+└── src/                       # Source files for the frontend application
+    ├── app/                   # Next.js app directory (pages and layout structure)
+    │   ├── fonts/             # Fonts directory
+    │   ├── login/             # Login page directory
+    │   ├── our-blog/          # Blog page directory
+    │   ├── post-details/[id]/ # Dynamic post details page based on id
+    │   ├── favicon.ico        # Favicon for the application
+    │   ├── globals.css        # Global CSS styles
+    │   ├── layout.tsx         # Main layout file for the application
+    │   └── page.tsx           # Main page of the application
+    │
+    ├── components/            # Reusable React components
+    │   ├── modal/             # Modal-related components
+    │   ├── sweetalert2/       # Components utilizing SweetAlert2 for alerts
+    │   ├── AuthStatus.tsx     # Component for displaying authentication status
+    │   ├── ClientWrapper.tsx  # Component for client-side logic wrapper
+    │   ├── CommunityDropdown.tsx # Dropdown component for community selection
+    │   ├── Navbar.tsx         # Navigation bar component
+    │   ├── Post.tsx           # Post display component
+    │   ├── SearchCreate.tsx   # Search and create functionality component
+    │   └── Sidebar.tsx        # Sidebar component
+    │
+    ├── constants/             # Constants used across the application
+    │   └── apiPaths.ts        # API path constants
+    │
+    ├── mock/                  # Mock data for testing and development
+    │   └── mockupdata.ts      # Sample mock data
+    │
+    ├── routers/               # Routing configurations
+    │   └── routers.ts         # Router configurations for the application
+    │
+    ├── services/              # Services for API calls and state management
+    │   ├── api/               # API-related services
+    │   └── store/             # Zustand store for state management
+    │
+    └── utils/                 # Utility functions and helpers
+        └── apiHelpers.ts      # Helper functions for API handling
 ```
 
 #### Setup back-end
