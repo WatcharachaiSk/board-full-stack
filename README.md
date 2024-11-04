@@ -16,7 +16,7 @@
 ### การตั้งค่า Docker Compose
 
 ไฟล์ Docker Compose นี้ตั้งค่าให้รัน PostgreSQL 14 ในคอนเทนเนอร์โดยมีการตั้งค่าดังนี้:
-
+รันคำสั่งที่ root file
 ```bash
 docker-compose up -d
 ```
