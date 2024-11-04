@@ -10,6 +10,7 @@ import useCommentStore from '@services/store/commentStore';
 import useAuthStore from '@services/store/authStore';
 import DeleteConfirmationModal from '@components/modal/DeleteConfirmationModal';
 import LoginRequiredModal from '@components/modal/LoginRequiredModal';
+import { sweet_mixin } from '@components/sweetalert2/sweet';
 
 const PostDetails = () => {
   const router = useRouter();
@@ -76,7 +77,13 @@ const PostDetails = () => {
 
   const handlePostComment = async () => {
     if (commentContent.trim() === '') {
-      alert('Please enter your comment');
+      sweet_mixin(
+        'top-end',
+        'warning',
+        'Please enter',
+        'Please enter your comment',
+        2000
+      );
       return;
     }
 
@@ -119,7 +126,13 @@ const PostDetails = () => {
 
   const handleUpdateComment = async () => {
     if (editCommentContent.trim() === '') {
-      alert('Please enter your comment');
+      sweet_mixin(
+        'top-end',
+        'warning',
+        'Please enter',
+        'Please enter your comment',
+        2000
+      );
       return;
     }
 

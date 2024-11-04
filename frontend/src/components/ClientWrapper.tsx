@@ -13,12 +13,16 @@ const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('access_token');
-      setUsername(localStorage.getItem('username') || 'User');
-      if (isLoginPage && token) {
-        router.push(Routers.Home);
-      }
+    if (typeof window === 'undefined') {
+      // ใช้การแปลงประเภทแบบ explicit
+      (window as Window).location.reload();
+      return;
+    }
+
+    const token = localStorage.getItem('access_token');
+    setUsername(localStorage.getItem('username') || 'User');
+    if (isLoginPage && token) {
+      router.push(Routers.Home);
     }
   }, [isLoginPage, router]);
 

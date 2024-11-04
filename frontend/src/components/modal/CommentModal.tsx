@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import useCommentStore from '@services/store/commentStore';
 import { useParams } from 'next/navigation';
+import { sweet_mixin } from '@components/sweetalert2/sweet';
 
 type CommentModalProps = {
   isOpen: boolean;
@@ -16,7 +17,14 @@ const CommentModal: FC<CommentModalProps> = ({ isOpen, onClose }) => {
 
   const handlePostComment = async () => {
     if (commentContent.trim() === '') {
-      return; // ไม่ให้โพสต์ความคิดเห็นที่ว่างเปล่า
+      sweet_mixin(
+        'top-end',
+        'warning',
+        'Please enter',
+        'Please enter your comment',
+        2000
+      );
+      return;
     }
 
     try {
@@ -24,8 +32,8 @@ const CommentModal: FC<CommentModalProps> = ({ isOpen, onClose }) => {
         content: commentContent,
         postId: Number(id),
       });
-      setCommentContent(''); // ล้างข้อความหลังโพสต์สำเร็จ
-      onClose(); // ปิด Modal
+      setCommentContent('');
+      onClose();
     } catch (error) {
       console.error('Error posting comment:', error);
     }

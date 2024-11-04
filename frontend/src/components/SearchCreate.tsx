@@ -5,6 +5,7 @@ import useCommunityStore from '@services/store/communityStore';
 import usePostStore from '@services/store/postStore';
 import LoginRequiredModal from './modal/LoginRequiredModal';
 import useAuthStore from '@services/store/authStore';
+import { AiOutlineCheck } from 'react-icons/ai';
 
 const SearchCreate: React.FC = () => {
   const { searchPosts, searchPostscommunity } = usePostStore();
@@ -130,7 +131,9 @@ const SearchCreate: React.FC = () => {
                       >
                         {community.title}
                         {selectedCommunity === community.title && (
-                          <span>✔️</span>
+                          <span>
+                            <AiOutlineCheck color={'#4A4A4A'} />
+                          </span>
                         )}
                       </button>
                     ))}
@@ -198,7 +201,11 @@ const SearchCreate: React.FC = () => {
                     }`}
                   >
                     {community.title}
-                    {selectedCommunity === community.title && <span>✔️</span>}
+                    {selectedCommunity === community.title && (
+                      <span>
+                        <AiOutlineCheck color={'#4A4A4A'} />
+                      </span>
+                    )}
                   </button>
                 ))}
             </div>

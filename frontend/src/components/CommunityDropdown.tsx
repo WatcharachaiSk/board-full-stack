@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AiOutlineCheck } from 'react-icons/ai';
 import { FaChevronDown } from 'react-icons/fa';
 
 interface Community {
@@ -60,7 +61,11 @@ const CommunityDropdown: React.FC<CommunityDropdownProps> = ({
                 }`}
               >
                 {community.title}
-                {selectedItem === community.title && <span>✔️</span>}
+                {selectedItem === community.title && (
+                  <span>
+                    <AiOutlineCheck color={'#4A4A4A'} />
+                  </span>
+                )}
               </button>
             ))}
         </div>

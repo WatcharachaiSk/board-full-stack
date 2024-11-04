@@ -3,6 +3,8 @@ import { FaChevronDown } from 'react-icons/fa';
 import { FC } from 'react';
 import usePostStore from '@services/store/postStore';
 import { usePathname } from 'next/navigation';
+import { sweet_mixin } from '@components/sweetalert2/sweet';
+import { AiOutlineCheck } from 'react-icons/ai';
 
 interface Community {
   id: number;
@@ -56,12 +58,24 @@ const CreatePostModal: FC<CreatePostModalProps> = ({
 
   const handleSubmit = async () => {
     if (!formState.communityId) {
-      alert('Please select a community.');
+      sweet_mixin(
+        'top-end',
+        'warning',
+        'Please select',
+        'Please select a community.',
+        2000
+      );
       return;
     }
 
     if (formState.title.trim() === '' || formState.content.trim() === '') {
-      alert('Please enter both title and content.');
+      sweet_mixin(
+        'top-end',
+        'warning',
+        'Please enter',
+        'Please enter both title and content.',
+        2000
+      );
       return;
     }
 
@@ -135,7 +149,9 @@ const CreatePostModal: FC<CreatePostModalProps> = ({
                     >
                       {community.title}
                       {formState.selectedCommunity === community.title && (
-                        <span>✔️</span>
+                        <span>
+                          <AiOutlineCheck color={'#4A4A4A'} />
+                        </span>
                       )}
                     </button>
                   ))}
