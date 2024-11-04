@@ -31,21 +31,23 @@ export default function Home() {
       <div className=' w-full lg:pr-72 mt-5'>
         <SearchCreate />
         {/* Post List */}
-        {posts.map((post, index) => (
-          <Post
-            currentPage={Routers.Home}
-            key={index}
-            index={index}
-            id={post.id}
-            user={post.user.username}
-            community={post.community.title}
-            communityId={post.community.id}
-            title={post.title}
-            content={post.content}
-            commentsCount={post.commentsCount}
-            navigateToPage={navigateToPage}
-          />
-        ))}
+        <div className='px-3 md:px-0'>
+          {posts.map((post, index) => (
+            <Post
+              currentPage={Routers.Home}
+              key={index}
+              index={index}
+              id={post.id}
+              user={post.user.username}
+              community={post.community.title}
+              communityId={post.community.id}
+              title={post.title}
+              content={post.content}
+              commentsCount={post.commentsCount}
+              navigateToPage={navigateToPage}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

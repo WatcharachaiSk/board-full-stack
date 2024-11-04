@@ -24,23 +24,24 @@ function OurBlog() {
       {/* Main Content */}
       <div className=' w-full lg:pr-72 mt-5'>
         <SearchCreate />
-
-        {/* Post List */}
-        {posts.map((post, index) => (
-          <Post
-            currentPage={Routers.OurBlog}
-            key={index}
-            index={index}
-            id={post.id}
-            user={post.user.username}
-            community={post.community.title}
-            communityId={post.community.id}
-            title={post.title}
-            content={post.content}
-            commentsCount={post.commentsCount}
-            navigateToPage={navigateToPage}
-          />
-        ))}
+        <div className='px-3 md:px-0'>
+          {/* Post List */}
+          {posts.map((post, index) => (
+            <Post
+              currentPage={Routers.OurBlog}
+              key={index}
+              index={index}
+              id={post.id}
+              user={post.user.username}
+              community={post.community.title}
+              communityId={post.community.id}
+              title={post.title}
+              content={post.content}
+              commentsCount={post.commentsCount}
+              navigateToPage={navigateToPage}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
